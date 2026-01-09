@@ -41,6 +41,12 @@ public class PagerDutyUtils {
         if (pagerDuty == null) {
             return false;
         }
+        try {
+            pdparams.tokenReplace(build, listener);
+        } catch (InterruptedException | IOException | MacroEvaluationException e) {
+            e.printStackTrace(listener.error("Tried to resolve PD incident with tokenized fields"));
+            return false;
+        }
         if (pdparams.getDedupKey() != null && pdparams.getDedupKey().trim().length() > 0) {
             ResolveIncidentBuilder resolveIncidentBuilder = ResolveIncidentBuilder.newBuilder(pdparams.getRoutingKey(), pdparams.getDedupKey());
             ResolveIncident resolveIncident = resolveIncidentBuilder.build();
